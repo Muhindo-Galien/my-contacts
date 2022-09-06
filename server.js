@@ -15,7 +15,7 @@ mongoose.connect(process.env.MONGO_URI,{useNewUrlParser: true, useUnifiedTopolog
 app.use(express.json());
 
 // Routes
-app.use('/api/',require('./routes/contact'))
+app.use("/api/v1/contacts", require("./routes/contact"));
 
 
 app.listen(5000, ()=> console.log("Server running"))
