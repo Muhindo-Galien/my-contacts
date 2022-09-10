@@ -12,9 +12,9 @@ router.get('/',getAllContacts)
 
 router.post('/add', upload.single('image'), AddContact);
 
-router.put('/:id', upload.single('image'), EditContact)
+router.put('/edit/:id', upload.single('image'), EditContact)
 
-router.delete('/:id',DeleteContact)
+router.delete('/delete/:id',DeleteContact)
 
 
 

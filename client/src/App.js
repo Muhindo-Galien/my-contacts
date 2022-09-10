@@ -1,12 +1,12 @@
 import "./App.css";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import data from "./data";
 import List from "./components/List";
+import { GrLogin } from "react-icons/gr";
+import { Link } from "react-router-dom";
 
 
 function App() {
-  const [people, setPeople] = useState(data);
   const [contacts, setContacts] = useState([]);
   const loadContacts = async () => {
     try {
@@ -23,13 +23,25 @@ function App() {
     loadContacts()
   }, []);
 
+
+
+
   return (
     <main>
       <section className="container">
+        {/* <div className="topNav">
+          <Link to="/">
+            <p>Home</p>
+          </Link>
+          <Link to="/add">
+            <p>Add Contact</p>
+          </Link>
+        </div> */}
+
         <div>
-        <h3>You have {contacts.length} contacts</h3>
+          <h3>You have {contacts.length} contacts</h3>
         </div>
-        <List contacts={contacts} />
+        <List contacts={contacts} setContacts={setContacts} />
         <button onClick={() => setContacts([])}>view all contacts</button>
       </section>
     </main>

@@ -1,41 +1,32 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React from "react";
 import "../App.css";
 import { GrUploadOption } from "react-icons/gr";
+// import axios from "axios";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const EditContact = () => {
-  let match = useParams();
-  const [preview, setPreview] = useState("");
+const AddForm = () => {
   const history = useNavigate();
   const [data, setData] = useState({
     name: "",
     image: "",
   });
-  useEffect(() => {
-    fetch(`/api/v1/contacts/${match.id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setData(data);
-        setPreview(data.image);
-      });
-  }, []);
-
   const handleChange = (name) => (e) => {
-    const value = name === "image" ? e.target.files[0] : e.target.value;
+    let value = name === "image" ? e.target.files[0] : e.target.value;
     setData({ ...data, [name]: value });
-    if (e.target.files) {
-      setPreview(URL.createObjectURL(e.target.files[0]));
-    }
   };
-
+  const removeSelectedImage = () => {
+    setData((data.image = ""));
+  };
+  console.log(data);
   const handleSubmit = async () => {
     try {
       let formData = new FormData();
       formData.append("image", data.image);
       formData.append("name", data.name);
 
-      const res = await fetch(`/api/v1/contacts/edit/${match.id}`, {
-        method: "PUT",
+      const res = await fetch(`/api/v1/contacts/add`, {
+        method: "POST",
         body: formData,
       });
       if (res.ok) {
@@ -46,16 +37,24 @@ const EditContact = () => {
       console.log(error);
     }
   };
+
   return (
     <main>
       <section className="container">
         <div>
-          <h3>Edit contact</h3>
+          <h3>Add contact</h3>
         </div>
 
         {data.image && (
           <div style={styles.preview}>
-            <img src={preview} style={styles.image} alt="Thumb" />
+            <img
+              src={URL.createObjectURL(data.image)}
+              style={styles.image}
+              alt="Thumb"
+            />
+            <button onClick={removeSelectedImage} style={styles.delete}>
+              Remove This Image
+            </button>
           </div>
         )}
         <input
@@ -69,28 +68,26 @@ const EditContact = () => {
         />
         <label htmlFor="icon-file" style={styles.icon}>
           <div>
-            <GrUploadOption
-              style={{ color: "#1231c9", fontSize: "40", marginRight: "10" }}
-            />{" "}
-            Upload
+            <GrUploadOption style={{ color: "#1231c9", fontSize: "40",marginRight:'10' }} /> Upload
           </div>
         </label>
         <input
           className="form-control"
+          placeholder="Enter name"
           type="text"
           name="name"
           value={data.name}
           onChange={handleChange("name")}
         />
         <button className="save" onClick={handleSubmit}>
-          Update
+          Save
         </button>
       </section>
     </main>
   );
 };
 
-export default EditContact;
+export default AddForm;
 
 // Just some styles
 const styles = {
@@ -106,11 +103,11 @@ const styles = {
     display: "flex",
     flexDirection: "column",
   },
-  image: { maxWidth: "100%", height: 120, width: 120, borderRadius: "50%",marginBottom:20 },
+  image: { maxWidth: "100%", height: 120, width: 120, borderRadius: "50%" },
   delete: {
     cursor: "pointer",
     padding: 15,
-    marginBottom: "1rem",
+    marginBottom:"1rem",
     background: "red",
     color: "white",
     border: "none",
@@ -118,6 +115,6 @@ const styles = {
   },
   icon: {
     textAlign: "center",
-    cursor: "pointer",
+    cursor:"pointer"
   },
 };
